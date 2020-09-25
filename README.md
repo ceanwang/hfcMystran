@@ -35,9 +35,11 @@ Download as hfcMystran.zip and unzip it under FreeCad's `Mod/` folder. The resul
 2. Switch to hfcMystran workbench
 3. Start a New file
 4. Open a Dat case file
+
   There is one test case under the Quickstart folder.
 5. Solve with Mystran
 6. Load result
+
   It will add the result into the model tree. Double click it and a Show result window will pop up. Choose the one want to view, tick View, drag the scroll bar to change the view scale.
 
 ## License
