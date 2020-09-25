@@ -20,7 +20,7 @@ Read in a Neu result file and draw the mesh and displacement.
 
 ## Prerequisites
 
-* Mystran
+* Mystran v11
 * FreeCAD v0.19.x
 
 ## Installation
