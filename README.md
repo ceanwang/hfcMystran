@@ -24,11 +24,25 @@ Read in a Neu result file and draw the mesh and displacement.
 * FreeCAD v0.19.x
 
 ## Installation
+Download as hfcMystran.zip and unzip it under FreeCad's `Mod/` folder. The result is a new 'Mod/hfcMystran' folder with all the files.
+
 This workbench is developed on Windows 10. No plan to support Linux. 
 
-Note: Mystran excutable file must be in Windows's PATH. Under Window 10, it must be named as `Mystran.exe`. 
+Note: Mystran.exe file must be in Windows's PATH.
 
-Download as hfcMystran-master.zip and unzip it under FreeCad's `Mod/` folder. The result is a new 'Mod/hfcMystran-master' folder with all the codes.
+
+## Use
+1. Start FreeCAD.
+2. Switch to hfcMystran workbench
+3. Start a New file
+4. Open a Dat case file
+
+  There is one test case under the Quickstart folder.
+  
+5. Solve with Mystran
+6. Load result
+
+  It will add the result into the model tree. Double click it and a Show result window will pop up. Choose the one want to view, tick View, drag the scroll bar to change the view scale.
 
 ## License
 GPL v3.0 (see [LICENSE](LICENCE) file)
