@@ -2,7 +2,7 @@
 Pre/Post processor for Mystran within FreeCAD.
 
 ## Background
-[Mystran](https://github.com/dr-bill-c/MYSTRAN) Mystran is a general purpose finite element analysis computer program for structures that can be modeled as linear.
+[Mystran](https://github.com/dr-bill-c/MYSTRAN) is a general purpose finite element analysis computer program for structures that can be modeled as linear.
 
 [FreeCAD](https://freecadweb.org) is an open source CAD/CAM solution.
 
