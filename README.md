@@ -28,7 +28,7 @@ Download as hfcMystran.zip and unzip it under FreeCad's `Mod/` folder. The resul
 
 This workbench is developed on Windows 10. No plan to support Linux. 
 
-Note: Mystran excutable file must be in Windows's PATH. Under Window 10, it must be named as `Mystran.exe`. 
+Note: Mystran.exe file must be in Windows's PATH.
 
 
 ## Use
