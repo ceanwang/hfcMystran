@@ -177,7 +177,7 @@ class hfcMystranDatInFemWire:
 			path=iniF.readline()
 			iniF.close()
 		else:
-			inipath=FreeCAD.getHomePath()
+			path=FreeCAD.getHomePath()
                 
 		try:
 			fName = QFileDialog.getOpenFileName(None,QString.fromLocal8Bit("Read a Mystarn's Dat/bdf file"),path, "*.Dat *.bdf") # PyQt4
