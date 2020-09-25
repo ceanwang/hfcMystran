@@ -28,7 +28,15 @@ This workbench is developed on Windows 10. No plan to support Linux.
 
 Note: Mystran excutable file must be in Windows's PATH. Under Window 10, it must be named as `Mystran.exe`. 
 
-Download as hfcMystran-master.zip and unzip it under FreeCad's `Mod/` folder. The result is a new 'Mod/hfcMystran-master' folder with all the codes.
+Download as hfcMystran.zip and unzip it under FreeCad's `Mod/` folder. The result is a new 'Mod/hfcMystran' folder with all the codes.
+
+## Use
+1. Start FreeCAD.
+2. Switch to hfcMystran workbench
+3. Start a New file
+4. Open a Dat case file
+5. Solve with Mystran
+6. Load result
 
 ## License
 GPL v3.0 (see [LICENSE](LICENCE) file)
