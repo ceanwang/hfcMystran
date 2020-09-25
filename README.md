@@ -1,37 +1,34 @@
-## hfcNastran95
-Pre/Post processor for Nastran95 within FreeCAD
+## hfcMystran
+Pre/Post processor for Mystran within FreeCAD.
 
 ## Background
-[Nastran95](http://github.com/nasa/NASTRAN-95) NASTRAN-95 is the NASA Structural Analysis System, a finite element analysis program (FEA) completed in the early 1970's.
+[Mystran](https://github.com/dr-bill-c/MYSTRAN) is a general purpose finite element analysis computer program for structures that can be modeled as linear.
 
 [FreeCAD](https://freecadweb.org) is an open source CAD/CAM solution.
 
 ## Features 
 Currently this workbench contains the following tools:
 
-###  Reading Inp files 
-The ability to read in an Inp case file and draw mesh. 
+###  1. Import Dat files 
+Import a Dat case file and draw mesh. 
 
-### Run Nastran95
-Not implimented yet.
-Execture the `Nastran` binary which reads in the Inp file and writes the result into a F06 file.
+### 2. Run Mystran
+Execture the `Mystran` binary which reads in the Dat file and writes the result into a Neu and a F06 file.
 
-### Show Results
-Not implimented yet.
-Read in F06 result file and draw the mesh and displacement.
+### 3. Show Results
+Read in a Neu result file and draw the mesh and displacement.
 
 ## Prerequisites
 
-* Nastran95
+* Mystran v11
 * FreeCAD v0.19.x
 
 ## Installation
-This workbench is developed on Windows 10.  
+This workbench is developed on Windows 10. No plan to support Linux. 
 
-Note: Nastran excutable file must be in Windows's PATH. Under Window 10, it must be named as `Nastran95.exe`. If you use a python script to run that exe file, your Python and that python script also need to be in window 10's
-PATH.
+Note: Mystran excutable file must be in Windows's PATH. Under Window 10, it must be named as `Mystran.exe`. 
 
-Download as hfcNastran95.zip and unzip it under FreeCad's `Mod/` folder. The result is a new 'Mod/hfcNastran95' folder with all the codes.
+Download as hfcMystran-master.zip and unzip it under FreeCad's `Mod/` folder. The result is a new 'Mod/hfcMystran-master' folder with all the codes.
 
 ## License
 GPL v3.0 (see [LICENSE](LICENCE) file)
