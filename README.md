@@ -37,6 +37,7 @@ Download as hfcMystran.zip and unzip it under FreeCad's `Mod/` folder. The resul
 4. Open a Dat case file
 
   There is one test case under the Quickstart folder.
+  
 5. Solve with Mystran
 6. Load result
 
