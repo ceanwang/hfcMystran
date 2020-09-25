@@ -9,13 +9,13 @@ Pre/Post processor for Mystran within FreeCAD.
 ## Features 
 Currently this workbench contains the following tools:
 
-###  Reading Dat files 
+###  1. Reading Dat files 
 The ability to read in an Dat case file and draw mesh. 
 
-### Run Mystran
+### 2. Run Mystran
 Execture the `Mystran` binary which reads in the Dat file and writes the result into a Neu and a F06 file.
 
-### Show Results
+### 3. Show Results
 Read in a Neu result file and draw the mesh and displacement.
 
 ## Prerequisites
