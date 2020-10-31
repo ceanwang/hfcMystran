@@ -1,6 +1,8 @@
 ## hfcMystran
 Pre/Post processor for Mystran within FreeCAD.
 
+![Frame3dd-screenshot](https://github.com/ceanwang/hfcMystran/blob/master/Screenshot/all-elem-test.gif)
+
 ## Background
 [Mystran](https://github.com/dr-bill-c/MYSTRAN) is a general purpose finite element analysis computer program for structures that can be modeled as linear.
 
