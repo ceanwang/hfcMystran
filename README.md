@@ -1,7 +1,7 @@
 ## hfcMystran
 Pre/Post processor for Mystran within FreeCAD.
 
-![Frame3dd-screenshot](https://github.com/ceanwang/hfcMystran/blob/master/Screenshot/all-elem-test.gif)
+![Frame3dd-screenshot](https://github.com/ceanwang/hfcMystran/blob/master/Screenshot/hfcMystran00.jpg)
 
 ## Background
 [Mystran](https://github.com/dr-bill-c/MYSTRAN) is a general purpose finite element analysis computer program for structures that can be modeled as linear.
@@ -19,6 +19,8 @@ Execture the `Mystran` binary which reads in the Dat file and writes the result 
 
 ### 3. Show Results
 Read in a Neu result file and draw the mesh and displacement.
+
+![Frame3dd-screenshot](https://github.com/ceanwang/hfcMystran/blob/master/Screenshot/all-elem-test.gif)
 
 ## Prerequisites
 
