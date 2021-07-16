@@ -3,10 +3,35 @@ import FreeCAD,FreeCADGui
 import Fem
 import os
 
+import ObjectsFem
+import feminout.importToolsFem as toolsFem
+
 import PySide
 from PySide import QtGui ,QtCore
 from PySide.QtGui import *
 from PySide.QtCore import *
+
+
+if open.__module__ == "io":
+    # because we'll redefine open below (Python3)
+    pyopen = open
+
+
+def open(filename):
+    "called when freecad opens a file"
+    docname = os.path.splitext(os.path.basename(filename))[0]
+    insert(filename, docname)
+
+
+def insert(filename, docname):
+    "called when freecad wants to import a file"
+    try:
+        doc = FreeCAD.getDocument(docname)
+    except NameError:
+        doc = FreeCAD.newDocument(docname)
+    FreeCAD.ActiveDocument = doc
+    import_neu(filename)
+
 
 class Node:
     def __init__(self, id , x,y,z):
@@ -163,21 +188,13 @@ class hfcMystranNeuIn:
 			return True
 
 	def Activated(self):
-		import feminout.importToolsFem as toolsFem
-		import ObjectsFem
-		
-		numNode=0
-		numMember=0
-        
-		analysis=None
-
 		iHfc =FreeCAD.ActiveDocument.getObject('hfc')
 		if iHfc==None:
 			ininame="Mod/hfcMystran/hfcMystran.ini"
 			
 			inifile = FreeCAD.getHomePath()+ininame
 			if os.path.exists(inifile):	
-				iniF = open(inifile,"r")
+				iniF = pyopen(inifile,"r")
 				path=iniF.readline()
 				iniF.close()
 			else:
@@ -198,7 +215,7 @@ class hfcMystranNeuIn:
 			filenameDat=path+fn[0]+'.dat'
 			
 			inifileOut = FreeCAD.getHomePath()+ininame
-			iniFout = open(inifileOut,"w")
+			iniFout = pyopen(inifileOut,"w")
 			iniFout.writelines(path)
 			iniFout.close()
 
@@ -207,13 +224,21 @@ class hfcMystranNeuIn:
 			filenameDat=iHfc.DatFile
 			filename=filenameDat[:len(filenameDat)-3]+'neu'
 			
+			import_neu(filename, filenameDat)
 
+
+def import_neu(filename, filenameDat=None):
+
+		if filenameDat is None:
+			filenameDat=filename[:len(filename)-3]+'bdf'
 		print ("Result: "+filename)
-		#print (path)
-		
-		#fNameDat = path+'hfcMystran.dat'
-		
-		
+		print ("Result: "+filenameDat)
+
+		analysis=None
+
+		numNode=0
+		numMember=0
+
 		nodes_x=[]
 		nodes_y=[]
 		nodes_z=[]
@@ -251,7 +276,7 @@ class hfcMystranNeuIn:
 
 		#000000000000000000000000000000000000000000000000000000000000000000
 		
-		fpDat = open(filenameDat)
+		fpDat = pyopen(filenameDat)
 		tline=[]
 		for line in fpDat:
 			aline=line.strip()	
@@ -496,7 +521,7 @@ class hfcMystranNeuIn:
 		
 		#femResult = Fem.FemResultObject()
         #--------------------------------------		
-		fp = open(filename)
+		fp = pyopen(filename)
 		tline=[]
 		for line in fp:
 			aline=line.strip()	
