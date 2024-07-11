@@ -30,7 +30,7 @@ Read in a Neu result file and draw the mesh and displacement.
 ## Installation
 Download as hfcMystran.zip and unzip it under FreeCad's `Mod/` folder. The result is a new 'Mod/hfcMystran' folder with all the files.
 
-This workbench is developed on Windows 10. No plan to support Linux. 
+This workbench is developed on Windows 10. No plan to support Linux. It has been run under Ubuntu. 
 
 Note: Mystran.exe file must be in Windows's PATH.
 
