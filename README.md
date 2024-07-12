@@ -49,4 +49,5 @@ Note: Mystran.exe file must be in Windows's PATH.
   It will add the result into the model tree. Double click it and a Show result window will pop up. Choose the one want to view, tick View, drag the scroll bar to change the view scale.
 
 ## License
-GPL v3.0 (see [LICENSE](LICENCE) file) + Not for commercial use.
+GPL v3.0 (see [LICENSE](LICENCE) file) + Not for commercial use. 
+If you want to use commercially, ask at ceanwang at gmail . com
