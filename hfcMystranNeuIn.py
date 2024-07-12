@@ -29,8 +29,8 @@ import PySide
 from PySide import QtGui ,QtCore
 from PySide.QtGui import *
 from PySide.QtCore import *
-#from femtaskpanels import task_result_mechanical as trm
-import hfc_task_result_mechanical as trm
+from femtaskpanels import task_result_mechanical as trm
+#import hfc_task_result_mechanical as trm
 
 if open.__module__ == "io":
     # because we'll redefine open below (Python3)
