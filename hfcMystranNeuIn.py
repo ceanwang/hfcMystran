@@ -257,7 +257,7 @@ class hfcMystranNeuIn:
 def import_neu(filename, filenameDat=None):
 
         isWireframe=0
-        isTop=0
+        isTop=1
         
         iHfc =FreeCAD.ActiveDocument.getObject('hfc')
         if iHfc!=None:
@@ -644,18 +644,54 @@ def import_neu(filename, filenameDat=None):
                 tline.append(line.strip())
         fp.close()
 
-        tStrDis1="T1  translation"
-        tStrDis2="T2  translation"
-        tStrDis3="T3  translation"
-        tStrDisR="RSS rotation"           
-        tStrDisR1="R1  rotation"
-        tStrDisR2="R2  rotation"
-        tStrDisR3="R3  rotation"
-        
         #RSS SPC force
         #T1  SPC force
         #RSS SPC moment 
         #R1  SPC moment
+
+        tStrDisT="RSS translation"        
+        tStrDisT1="T1  translation"
+        tStrDisT2="T2  translation"
+        tStrDisT3="T3  translation"
+        tStrDisR="RSS rotation"           
+        tStrDisR1="R1  rotation"
+        tStrDisR2="R2  rotation"
+        tStrDisR3="R3  rotation"
+        #--------------------------
+        #TRIA3
+        #--------------------------
+        #TRIA3 Top X Direct Stress 
+        #TRIA3 Top Y Direct Stress 
+        #TRIA3 Top XY Shear Stress
+        
+        #TRIA3 Top Maj Prn Stress  
+        tTRIA3TMajPrn="TRIA3 Top Maj Prn Stress"        
+        tTRIA3BMajPrn="TRIA3 Bot Maj Prn Stress"        
+
+        #TRIA3 Top Min Prn Stress   
+        tTRIA3TMinPrn="TRIA3 Top Min Prn Stress"
+        tTRIA3BMinPrn="TRIA3 Bot Min Prn Stress"
+        
+        #TRIA3 Top Prn Str Angle     
+        
+        #TRIA3 Top Mean Stress  
+        tTRIA3TMean="TRIA3 Top Mean Stress"
+        tTRIA3BMean="TRIA3 Bot Mean Stress"
+        
+        #TRIA3 Top Max Shear Stress  
+        tTRIA3TMaxShear="TRIA3 Top Max Shear Stress"
+        tTRIA3BMaxShear="TRIA3 Bot Max Shear Stress"
+        
+        #TRIA3 Top Von Mises Stress
+        tTRIA3TVonMises="TRIA3 Top Von Mises Stress"
+        tTRIA3BVonMises="TRIA3 Bot Von Mises Stress"
+        
+        #TRIA3 Top XZ Shear Stress      
+        #TRIA3 Top YZ Shear Stress      
+        
+        #--------------------------
+        #QUAD4
+        #--------------------------
         #QUAD4 Top X Direct Stress 
         #QUAD4 Top Y Direct Stress 
         #QUAD4 Top XY Shear Stress 
@@ -678,10 +714,42 @@ def import_neu(filename, filenameDat=None):
         tQUAD4BVonMises="QUAD4 Bot Von Mises Stress"  
 
         #QUAD4 Top XZ Shear Stress    
-        #QUAD4 Top YZ Shear Stress        
+        #QUAD4 Top YZ Shear Stress       
+
+        #--------------------------
+        #TETRA4 
+        #--------------------------
+        #TETRA4 X Direct Stress          
+        #TETRA4 Y Direct Stress          
+        #TETRA4 Z Direct Stress          
+        
+        #TETRA4 XY Shear Stress          
+        tTETRA4XY="TETRA4 XY Shear Stress"
+        #TETRA4 YZ Shear Stress          
+        tTETRA4YZ="TETRA4 YZ Shear Stress"
+        #TETRA4 ZX Shear Stress          
+        tTETRA4ZX="TETRA4 ZX Shear Stress"
+        
+        #TETRA4 Prin Stress-1            
+        tTETRA4Prn1="TETRA4 Prin Stress-1"
+        
+        #TETRA4 Prin Stress-2            
+        tTETRA4Prn2="TETRA4 Prin Stress-2"
+        
+        #TETRA4 Prin Stress-3            
+        tTETRA4Prn3="TETRA4 Prin Stress-3"
+        
+        #TETRA4 Mean Stress     
+        tTETRA4Mean="TETRA4 Mean Stress"
+        
+        #TETRA4 von Mises Stress      
+        tTETRA4VonMises="TETRA4 von Mises Stress"
+        #TETRA4   (null field)           
+
         
         for i in range(len(tline)):
-            if tline[i].strip() == tStrDis1:
+            #print (tline[i].strip())
+            if tline[i].strip() == tStrDisT1:
                 #T1  translation        
                 #     0.000000E+00,     1.800000E-04,     1.800000E-04,
                 #   10002,       0,       0,       0,       0,       0,       0,       0,       0,       0,
@@ -699,7 +767,7 @@ def import_neu(filename, filenameDat=None):
                     mode_disp_x.append( float(dataNode[1]))
                     i=i+1
 
-            if tline[i].strip() == tStrDis2:
+            if tline[i].strip() == tStrDisT2:
                 #T1  translation        
                 i=i+6
                 for id in range(numNode): # node
@@ -711,7 +779,7 @@ def import_neu(filename, filenameDat=None):
                     mode_disp_y.append(float(dataNode[1]))
                     i=i+1
 
-            if tline[i].strip() == tStrDis3:
+            if tline[i].strip() == tStrDisT3:
                 #T1  translation        
                 i=i+6
                 for id in range(numNode): # node
@@ -755,103 +823,157 @@ def import_neu(filename, filenameDat=None):
                     #print (dataNode[0]+" "+str(numNode))
                     mode_disp_Rz.append( float(dataNode[1]))
                     i=i+1
+            #--------------------------
+            #QUAD4 & TRIA3
+            #--------------------------
             #Top 
-            if tline[i].strip() == tQUAD4TMajPrn and isTop==1:
-                #QUAD4 Top Maj Prn Stress"
+            #
+            if isTop==1: 
+                if tline[i].strip() == tTRIA3TMajPrn or tline[i].strip() == tQUAD4TMajPrn:
+                    #"Top Maj Prn Stress"
+                    print ("Top Maj Prn Stress") 
+                    i=i+6
+                    for id in range(numMember): # node
+                        dataNode = tline[i].split(",")
+                        #print (dataNode[0]+" "+str(numMember))
+                        #print (dataNode[1])
+                        prinstress1.append( float(dataNode[1]))
+                        i=i+1
+                        
+                if tline[i].strip() == tTRIA3TMean or tline[i].strip() == tQUAD4TMean :
+                    #QUAD4 Top Mean Stress"
+                    i=i+6
+                    for id in range(numMember): # node
+                        dataNode = tline[i].split(",")
+                        prinstress2.append( float(dataNode[1]))
+                        i=i+1
+                        
+                if tline[i].strip() == tTRIA3TMinPrn or tline[i].strip() == tQUAD4TMinPrn:
+                    #QUAD4 Top Min Prn Stress"
+                    i=i+6
+                    for id in range(numMember): # node
+                        dataNode = tline[i].split(",")
+                        prinstress3.append( float(dataNode[1]))
+                        i=i+1
+                        
+                if tline[i].strip() == tTRIA3TVonMises or tline[i].strip() == tQUAD4TVonMises:
+                    i=i+6
+                    for id in range(numMember): # node
+                        dataNode = tline[i].split(",")
+                        mstress.append( float(dataNode[1]))
+                        i=i+1
+
+                if tline[i].strip() == tTRIA3TMaxShear or tline[i].strip() == tQUAD4TMaxShear:
+                    #QUAD4 Top Max Shear Stress"
+                    i=i+6
+                    for id in range(numMember): # node
+                        dataNode = tline[i].split(",")
+                        shearstress.append( float(dataNode[1]))
+                        i=i+1
+            #       
+            #Bottom       
+            #              
+            else: 
+                if tline[i].strip() == tTRIA3BMajPrn or tline[i].strip() == tQUAD4BMajPrn:
+                    #QUAD4 Bot Maj Prn Stress"
+                    print ("QUAD4 Bot Maj Prn Stress")
+                    i=i+6
+                    for id in range(numMember): # node
+                        dataNode = tline[i].split(",")
+                        #print (dataNode[0]+" "+str(numMember))
+                        #print (dataNode[1])
+                        prinstress1.append( float(dataNode[1]))
+                        i=i+1
+                        
+                if tline[i].strip() == tTRIA3BMean or tline[i].strip() == tQUAD4BMean:
+                    #QUAD4 Top Mean Stress"
+                    i=i+6
+                    for id in range(numMember): # node
+                        dataNode = tline[i].split(",")
+                        prinstress2.append( float(dataNode[1]))
+                        i=i+1
+                        
+                if tline[i].strip() == tTRIA3BMinPrn or tline[i].strip() == tQUAD4BMinPrn:
+                    #QUAD4 Top Min Prn Stress"
+                    i=i+6
+                    for id in range(numMember): # node
+                        dataNode = tline[i].split(",")
+                        prinstress3.append( float(dataNode[1]))
+                        i=i+1
+                        
+                if tline[i].strip() == tTRIA3BVonMises or tline[i].strip() == tQUAD4BVonMises:
+                    i=i+6
+                    for id in range(numMember): # node
+                        dataNode = tline[i].split(",")
+                        mstress.append( float(dataNode[1]))
+                        i=i+1
+
+                if tline[i].strip() == tTRIA3BMaxShear or tline[i].strip() == tQUAD4BMaxShear:
+                    #QUAD4 Top Max Shear Stress"
+                    i=i+6
+                    for id in range(numMember): # node
+                        dataNode = tline[i].split(",")
+                        shearstress.append( float(dataNode[1]))
+                        i=i+1
+                    
+            #--------------------------
+            #TETRA4
+            #--------------------------
+            #tTETRA4XY="TETRA4 XY Shear Stress"
+            #tTETRA4Prn1="TETRA4 Prin Stress-1"
+            #tTETRA4Prn2="TETRA4 Prin Stress-2"
+            #tTETRA4Prn3="TETRA4 Prin Stress-3"
+            #tTETRA4Mean="TETRA4 Mean Stress"
+            #tTETRA4VonMises="TETRA4 von Mises Stress"
+            
+            if tline[i].strip() == tTETRA4Prn1:
                 i=i+6
+                print (tTETRA4Prn1)
                 for id in range(numMember): # node
                     dataNode = tline[i].split(",")
                     #print (dataNode[0]+" "+str(numMember))
                     #print (dataNode[1])
                     prinstress1.append( float(dataNode[1]))
-                    #prinstress1.append(prin1)
                     i=i+1
                     
-            if tline[i].strip() == tQUAD4TMean and isTop==1:
-                #QUAD4 Top Mean Stress"
+            if tline[i].strip() == tTETRA4Prn3:
                 i=i+6
-                for id in range(numMember): # node
-                    dataNode = tline[i].split(",")
-                    prinstress2.append( float(dataNode[1]))
-                    #prinstress2.append(prin2)
-                    i=i+1
-                    
-            if tline[i].strip() == tQUAD4TMinPrn and isTop==1:
-                #QUAD4 Top Min Prn Stress"
-                i=i+6
-                for id in range(numMember): # node
-                    dataNode = tline[i].split(",")
-                    prinstress3.append( float(dataNode[1]))
-                    #prinstress3.append(prin3)
-                    i=i+1
-                    
-            if tline[i].strip() == tQUAD4TVonMises and isTop==1:
-                #print ("#QUAD4 Top Von Mises Stress")
-                i=i+6
-                for id in range(numMember): # node
-                    dataNode = tline[i].split(",")
-                    mstress.append( float(dataNode[1]))
-                    #mstress.append(calculate_von_mises((Sxx, Syy, Szz, Sxy, Sxz, Syz)))
-                    i=i+1
-
-            if tline[i].strip() == tQUAD4TMaxShear and isTop==1:
-                #QUAD4 Top Max Shear Stress"
-                i=i+6
-                for id in range(numMember): # node
-                    dataNode = tline[i].split(",")
-                    shearstress.append( float(dataNode[1]))
-                    #mstress.append(calculate_von_mises((Sxx, Syy, Szz, Sxy, Sxz, Syz)))
-                    i=i+1
-                   
-            #Bottom                   
-            if tline[i].strip() == tQUAD4BMajPrn and isTop==0:
-                #QUAD4 Top Maj Prn Stress"
-                i=i+6
+                print (tTETRA4Prn3)
                 for id in range(numMember): # node
                     dataNode = tline[i].split(",")
                     #print (dataNode[0]+" "+str(numMember))
                     #print (dataNode[1])
-                    prinstress1.append( float(dataNode[1]))
-                    #prinstress1.append(prin1)
+                    prinstress3.append( float(dataNode[1]))
                     i=i+1
                     
-            if tline[i].strip() == tQUAD4BMean and isTop==0:
-                #QUAD4 Top Mean Stress"
+            if tline[i].strip() == tTETRA4Mean:
                 i=i+6
+                print (tTETRA4Mean)
                 for id in range(numMember): # node
                     dataNode = tline[i].split(",")
                     prinstress2.append( float(dataNode[1]))
-                    #prinstress2.append(prin2)
                     i=i+1
                     
-            if tline[i].strip() == tQUAD4BMinPrn and isTop==0:
-                #QUAD4 Top Min Prn Stress"
+            if tline[i].strip() == tTETRA4VonMises:
                 i=i+6
-                for id in range(numMember): # node
-                    dataNode = tline[i].split(",")
-                    prinstress3.append( float(dataNode[1]))
-                    #prinstress3.append(prin3)
-                    i=i+1
-                    
-            if tline[i].strip() == tQUAD4BVonMises and isTop==0:
-                #print ("#QUAD4 Top Von Mises Stress")
-                i=i+6
+                print (tTETRA4VonMises)
                 for id in range(numMember): # node
                     dataNode = tline[i].split(",")
                     mstress.append( float(dataNode[1]))
                     #mstress.append(calculate_von_mises((Sxx, Syy, Szz, Sxy, Sxz, Syz)))
                     i=i+1
-
-            if tline[i].strip() == tQUAD4BMaxShear and isTop==0:
-                #QUAD4 Top Max Shear Stress"
+                    
+            if tline[i].strip() == tTETRA4XY:
                 i=i+6
+                print (tTETRA4XY)
                 for id in range(numMember): # node
                     dataNode = tline[i].split(",")
                     shearstress.append( float(dataNode[1]))
-                    #mstress.append(calculate_von_mises((Sxx, Syy, Szz, Sxy, Sxz, Syz)))
                     i=i+1
-                    
+
+
         isOne=2
+        #init
         for id in range(numNode): # node
             tN=int(id)
             #print (tN)
@@ -866,7 +988,61 @@ def import_neu(filename, filenameDat=None):
         for id in MemberList: # node
             tN=int(id)-1
             #print (tN)
-            if MemberList[id].mtype =='CQUAD4':
+            if MemberList[id].mtype =='CTRIA3':
+                #MemberCQUAD4(data[1].strip(), data[3], data[4], data[5], data[6], data[0].strip())  
+                n1=int(MemberList[id].n1)-1
+                n2=int(MemberList[id].n2)-1
+                n3=int(MemberList[id].n3)-1
+                #print (str(tN)+' '+str(n1)+' '+str(n2)+' '+str(n3))
+                
+                if isOne==1: 
+                    shearstressNode[n1]=shearstress[tN]
+                    shearstressNode[n2]=shearstress[tN]
+                    shearstressNode[n3]=shearstress[tN]
+                    
+                    mstressNode[n1]=mstress[tN]
+                    mstressNode[n2]=mstress[tN]
+                    mstressNode[n3]=mstress[tN]
+                    
+                    prinstress1Node[n1]=prinstress1[tN]
+                    prinstress1Node[n2]=prinstress1[tN]
+                    prinstress1Node[n3]=prinstress1[tN]
+                    
+                    prinstress2Node[n1]=prinstress2[tN]
+                    prinstress2Node[n2]=prinstress2[tN]
+                    prinstress2Node[n3]=prinstress2[tN]
+                    
+                    prinstress3Node[n1]=prinstress3[tN]
+                    prinstress3Node[n2]=prinstress3[tN]
+                    prinstress3Node[n3]=prinstress3[tN]
+                else:
+                    nodeCount[n1]=nodeCount[n1]+1
+                    nodeCount[n2]=nodeCount[n2]+1
+                    nodeCount[n3]=nodeCount[n3]+1
+                    
+                    #print (shearstress[tN])
+                    shearstressNode[n1]=shearstressNode[n1]+shearstress[tN]
+                    shearstressNode[n2]=shearstressNode[n2]+shearstress[tN]
+                    shearstressNode[n3]=shearstressNode[n3]+shearstress[tN]
+                    
+                    mstressNode[n1]=mstressNode[n1]+mstress[tN]
+                    mstressNode[n2]=mstressNode[n2]+mstress[tN]
+                    mstressNode[n3]=mstressNode[n3]+mstress[tN]
+                    
+                    prinstress1Node[n1]=prinstress1Node[n1]+prinstress1[tN]
+                    prinstress1Node[n2]=prinstress1Node[n2]+prinstress1[tN]
+                    prinstress1Node[n3]=prinstress1Node[n3]+prinstress1[tN]
+                    
+                    prinstress2Node[n1]=prinstress2Node[n1]+prinstress2[tN]
+                    prinstress2Node[n2]=prinstress2Node[n2]+prinstress2[tN]
+                    prinstress2Node[n3]=prinstress2Node[n3]+prinstress2[tN]
+                    
+                    prinstress3Node[n1]=prinstress3Node[n1]+prinstress3[tN]
+                    prinstress3Node[n2]=prinstress3Node[n2]+prinstress3[tN]
+                    prinstress3Node[n3]=prinstress3Node[n3]+prinstress3[tN]
+                    
+            elif MemberList[id].mtype =='CQUAD4':
+            
                 #MemberCQUAD4(data[1].strip(), data[3], data[4], data[5], data[6], data[0].strip())  
                 n1=int(MemberList[id].n1)-1
                 n2=int(MemberList[id].n2)-1
@@ -931,7 +1107,92 @@ def import_neu(filename, filenameDat=None):
                     prinstress3Node[n3]=prinstress3Node[n3]+prinstress3[tN]
                     prinstress3Node[n4]=prinstress3Node[n4]+prinstress3[tN]
                     
-        if MemberList[id].mtype =='CQUAD4':
+            elif MemberList[id].mtype =='CTETRA':
+            
+                n1=int(MemberList[id].n1)-1
+                n2=int(MemberList[id].n2)-1
+                n3=int(MemberList[id].n3)-1
+                n4=int(MemberList[id].n4)-1
+                #print (str(tN)+' '+str(n1)+' '+str(n2)+' '+str(n3)+' '+str(n4))
+                
+                if isOne==1: 
+                    shearstressNode[n1]=shearstress[tN]
+                    shearstressNode[n2]=shearstress[tN]
+                    shearstressNode[n3]=shearstress[tN]
+                    shearstressNode[n4]=shearstress[tN]
+                    
+                    mstressNode[n1]=mstress[tN]
+                    mstressNode[n2]=mstress[tN]
+                    mstressNode[n3]=mstress[tN]
+                    mstressNode[n4]=mstress[tN]
+                    
+                    prinstress1Node[n1]=prinstress1[tN]
+                    prinstress1Node[n2]=prinstress1[tN]
+                    prinstress1Node[n3]=prinstress1[tN]
+                    prinstress1Node[n4]=prinstress1[tN]
+                    
+                    prinstress2Node[n1]=prinstress2[tN]
+                    prinstress2Node[n2]=prinstress2[tN]
+                    prinstress2Node[n3]=prinstress2[tN]
+                    prinstress2Node[n4]=prinstress2[tN]
+                    
+                    prinstress3Node[n1]=prinstress3[tN]
+                    prinstress3Node[n2]=prinstress3[tN]
+                    prinstress3Node[n3]=prinstress3[tN]
+                    prinstress3Node[n4]=prinstress3[tN]
+                else:
+                    nodeCount[n1]=nodeCount[n1]+1
+                    nodeCount[n2]=nodeCount[n2]+1
+                    nodeCount[n3]=nodeCount[n3]+1
+                    nodeCount[n4]=nodeCount[n4]+1
+                    
+                    #print (shearstress[tN])
+                    shearstressNode[n1]=shearstressNode[n1]+shearstress[tN]
+                    shearstressNode[n2]=shearstressNode[n2]+shearstress[tN]
+                    shearstressNode[n3]=shearstressNode[n3]+shearstress[tN]
+                    shearstressNode[n4]=shearstressNode[n4]+shearstress[tN]
+                    
+                    mstressNode[n1]=mstressNode[n1]+mstress[tN]
+                    mstressNode[n2]=mstressNode[n2]+mstress[tN]
+                    mstressNode[n3]=mstressNode[n3]+mstress[tN]
+                    mstressNode[n4]=mstressNode[n4]+mstress[tN]
+                    
+                    prinstress1Node[n1]=prinstress1Node[n1]+prinstress1[tN]
+                    prinstress1Node[n2]=prinstress1Node[n2]+prinstress1[tN]
+                    prinstress1Node[n3]=prinstress1Node[n3]+prinstress1[tN]
+                    prinstress1Node[n4]=prinstress1Node[n4]+prinstress1[tN]
+                    
+                    prinstress2Node[n1]=prinstress2Node[n1]+prinstress2[tN]
+                    prinstress2Node[n2]=prinstress2Node[n2]+prinstress2[tN]
+                    prinstress2Node[n3]=prinstress2Node[n3]+prinstress2[tN]
+                    prinstress2Node[n4]=prinstress2Node[n4]+prinstress2[tN]
+                    
+                    prinstress3Node[n1]=prinstress3Node[n1]+prinstress3[tN]
+                    prinstress3Node[n2]=prinstress3Node[n2]+prinstress3[tN]
+                    prinstress3Node[n3]=prinstress3Node[n3]+prinstress3[tN]
+                    prinstress3Node[n4]=prinstress3Node[n4]+prinstress3[tN]
+                    
+        if MemberList[id].mtype =='CTRIA3':
+            for id in range(numNode): # node
+                tn=int(id)
+                #print (nodeCount[tn])
+                shearstressNode[tn]=shearstressNode[tn]/nodeCount[tn]
+                mstressNode[tn]=mstressNode[tn]/nodeCount[tn]
+                prinstress1Node[tn]=prinstress1Node[tn]/nodeCount[tn]
+                prinstress2Node[tn]=prinstress2Node[tn]/nodeCount[tn]
+                prinstress3Node[tn]=prinstress3Node[tn]/nodeCount[tn]
+                
+        elif MemberList[id].mtype =='CQUAD4':
+            for id in range(numNode): # node
+                tn=int(id)
+                #print (nodeCount[tn])
+                shearstressNode[tn]=shearstressNode[tn]/nodeCount[tn]
+                mstressNode[tn]=mstressNode[tn]/nodeCount[tn]
+                prinstress1Node[tn]=prinstress1Node[tn]/nodeCount[tn]
+                prinstress2Node[tn]=prinstress2Node[tn]/nodeCount[tn]
+                prinstress3Node[tn]=prinstress3Node[tn]/nodeCount[tn]
+                
+        elif MemberList[id].mtype =='CTETRA':
             for id in range(numNode): # node
                 tn=int(id)
                 #print (nodeCount[tn])
