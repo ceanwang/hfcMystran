@@ -341,13 +341,15 @@ def import_neu(filename, filenameDat=None):
 
         nDisp=0
         mDisp=0
-        isDebug=1
+
+        gidL=0
         
         #factor = 25.42
         factor = 1
         
         factorZoom = 100
 
+        isDebug=1
         #000000000000000000000000000000000000000000000000000000000000000000
         
         fpDat = pyopen(filenameDat)
@@ -459,8 +461,13 @@ def import_neu(filename, filenameDat=None):
     
             #CTRIA3  24      91      1033    1032    1023
             if data[0]=='CTRIA3':
-                MemberList[data[1].strip()] =  MemberCTRIA3(data[1].strip(), data[3] ,data[4] , data[5] ,data[0].strip())  
                 numMember+=1
+                if numMember==1 and float(data[1])!=1: 
+                    gidL=1
+                if gidL==1:    
+                    MemberList[str(numMember).strip()] =  MemberCTRIA3(data[1].strip(), data[3] ,data[4] , data[5] ,data[0].strip())  
+                else:
+                    MemberList[data[1].strip()] =  MemberCTRIA3(data[1].strip(), data[3] ,data[4] , data[5] ,data[0].strip())  
 
             #CQUAD4      1001       1    1001    1002    2002    2001
             if data[0]=='CQUAD4':
