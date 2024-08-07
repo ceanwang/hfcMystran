@@ -258,6 +258,7 @@ def import_neu(filename, filenameDat=None):
 
         isWireframe=0
         isTop=1
+        isStress=0
         
         iHfc =FreeCAD.ActiveDocument.getObject('hfc')
         if iHfc!=None:
@@ -482,9 +483,14 @@ def import_neu(filename, filenameDat=None):
 
             #CTETRA   1       1       8       13      67      33
             if data[0]=='CTETRA':
-                MemberList[data[1].strip()] =  MemberCQUAD4(data[1].strip(), data[3] ,data[4] , data[5] , data[6],data[0].strip())  
                 numMember+=1
-                
+                if numMember==1 and float(data[1])!=1: 
+                    gidL=1
+                if gidL==1:    
+                    print (numMember)
+                    MemberList[str(numMember).strip()] =  MemberCTETRA(data[1].strip(), data[3] ,data[4] , data[5] , data[6],data[0].strip())  
+                else:
+                    MemberList[data[1].strip()] =  MemberCTETRA(data[1].strip(), data[3] ,data[4] , data[5] , data[6],data[0].strip())  
             #
             #CHEXA      10101     100   10101   10103   10303   10301   30101   30103+E     1
             #+E     1   30303   30301
@@ -837,6 +843,7 @@ def import_neu(filename, filenameDat=None):
             #
             if isTop==1: 
                 if tline[i].strip() == tTRIA3TMajPrn or tline[i].strip() == tQUAD4TMajPrn:
+                    isStress=1
                     #"Top Maj Prn Stress"
                     print ("Top Maj Prn Stress") 
                     i=i+6
@@ -848,6 +855,7 @@ def import_neu(filename, filenameDat=None):
                         i=i+1
                         
                 if tline[i].strip() == tTRIA3TMean or tline[i].strip() == tQUAD4TMean :
+                    isStress=1
                     #QUAD4 Top Mean Stress"
                     i=i+6
                     for id in range(numMember): # node
@@ -856,6 +864,7 @@ def import_neu(filename, filenameDat=None):
                         i=i+1
                         
                 if tline[i].strip() == tTRIA3TMinPrn or tline[i].strip() == tQUAD4TMinPrn:
+                    isStress=1
                     #QUAD4 Top Min Prn Stress"
                     i=i+6
                     for id in range(numMember): # node
@@ -864,6 +873,7 @@ def import_neu(filename, filenameDat=None):
                         i=i+1
                         
                 if tline[i].strip() == tTRIA3TVonMises or tline[i].strip() == tQUAD4TVonMises:
+                    isStress=1
                     i=i+6
                     for id in range(numMember): # node
                         dataNode = tline[i].split(",")
@@ -871,6 +881,7 @@ def import_neu(filename, filenameDat=None):
                         i=i+1
 
                 if tline[i].strip() == tTRIA3TMaxShear or tline[i].strip() == tQUAD4TMaxShear:
+                    isStress=1
                     #QUAD4 Top Max Shear Stress"
                     i=i+6
                     for id in range(numMember): # node
@@ -882,6 +893,7 @@ def import_neu(filename, filenameDat=None):
             #              
             else: 
                 if tline[i].strip() == tTRIA3BMajPrn or tline[i].strip() == tQUAD4BMajPrn:
+                    isStress=1
                     #QUAD4 Bot Maj Prn Stress"
                     print ("QUAD4 Bot Maj Prn Stress")
                     i=i+6
@@ -893,6 +905,7 @@ def import_neu(filename, filenameDat=None):
                         i=i+1
                         
                 if tline[i].strip() == tTRIA3BMean or tline[i].strip() == tQUAD4BMean:
+                    isStress=1
                     #QUAD4 Top Mean Stress"
                     i=i+6
                     for id in range(numMember): # node
@@ -901,6 +914,7 @@ def import_neu(filename, filenameDat=None):
                         i=i+1
                         
                 if tline[i].strip() == tTRIA3BMinPrn or tline[i].strip() == tQUAD4BMinPrn:
+                    isStress=1
                     #QUAD4 Top Min Prn Stress"
                     i=i+6
                     for id in range(numMember): # node
@@ -909,6 +923,7 @@ def import_neu(filename, filenameDat=None):
                         i=i+1
                         
                 if tline[i].strip() == tTRIA3BVonMises or tline[i].strip() == tQUAD4BVonMises:
+                    isStress=1
                     i=i+6
                     for id in range(numMember): # node
                         dataNode = tline[i].split(",")
@@ -916,6 +931,7 @@ def import_neu(filename, filenameDat=None):
                         i=i+1
 
                 if tline[i].strip() == tTRIA3BMaxShear or tline[i].strip() == tQUAD4BMaxShear:
+                    isStress=1
                     #QUAD4 Top Max Shear Stress"
                     i=i+6
                     for id in range(numMember): # node
@@ -934,6 +950,7 @@ def import_neu(filename, filenameDat=None):
             #tTETRA4VonMises="TETRA4 von Mises Stress"
             
             if tline[i].strip() == tTETRA4Prn1:
+                isStress=1
                 i=i+6
                 print (tTETRA4Prn1)
                 for id in range(numMember): # node
@@ -944,6 +961,7 @@ def import_neu(filename, filenameDat=None):
                     i=i+1
                     
             if tline[i].strip() == tTETRA4Prn3:
+                isStress=1
                 i=i+6
                 print (tTETRA4Prn3)
                 for id in range(numMember): # node
@@ -954,6 +972,7 @@ def import_neu(filename, filenameDat=None):
                     i=i+1
                     
             if tline[i].strip() == tTETRA4Mean:
+                isStress=1
                 i=i+6
                 print (tTETRA4Mean)
                 for id in range(numMember): # node
@@ -962,6 +981,7 @@ def import_neu(filename, filenameDat=None):
                     i=i+1
                     
             if tline[i].strip() == tTETRA4VonMises:
+                isStress=1
                 i=i+6
                 print (tTETRA4VonMises)
                 for id in range(numMember): # node
@@ -971,6 +991,7 @@ def import_neu(filename, filenameDat=None):
                     i=i+1
                     
             if tline[i].strip() == tTETRA4XY:
+                isStress=1
                 i=i+6
                 print (tTETRA4XY)
                 for id in range(numMember): # node
@@ -980,249 +1001,250 @@ def import_neu(filename, filenameDat=None):
 
 
         isOne=2
-        #init
-        for id in range(numNode): # node
-            tN=int(id)
-            #print (tN)
-            nodeCount[tN]=0
-            shearstressNode[tN]=0
-            mstressNode[tN]=0
-            prinstress1Node[tN]=0
-            prinstress2Node[tN]=0
-            prinstress3Node[tN]=0
+        if isStress==1:
+            #init
+            for id in range(numNode): # node
+                tN=int(id)
+                #print (tN)
+                nodeCount[tN]=0
+                shearstressNode[tN]=0
+                mstressNode[tN]=0
+                prinstress1Node[tN]=0
+                prinstress2Node[tN]=0
+                prinstress3Node[tN]=0
             
-        #find node stress
-        for id in MemberList: # node
-            tN=int(id)-1
-            #print (tN)
-            if MemberList[id].mtype =='CTRIA3':
-                #MemberCQUAD4(data[1].strip(), data[3], data[4], data[5], data[6], data[0].strip())  
-                n1=int(MemberList[id].n1)-1
-                n2=int(MemberList[id].n2)-1
-                n3=int(MemberList[id].n3)-1
-                #print (str(tN)+' '+str(n1)+' '+str(n2)+' '+str(n3))
+            #find node stress
+            for id in MemberList: # node
+                tN=int(id)-1
+                #print (tN)
+                if MemberList[id].mtype =='CTRIA3':
+                    #MemberCQUAD4(data[1].strip(), data[3], data[4], data[5], data[6], data[0].strip())  
+                    n1=int(MemberList[id].n1)-1
+                    n2=int(MemberList[id].n2)-1
+                    n3=int(MemberList[id].n3)-1
+                    #print (str(tN)+' '+str(n1)+' '+str(n2)+' '+str(n3))
+                    
+                    if isOne==1: 
+                        shearstressNode[n1]=shearstress[tN]
+                        shearstressNode[n2]=shearstress[tN]
+                        shearstressNode[n3]=shearstress[tN]
+                        
+                        mstressNode[n1]=mstress[tN]
+                        mstressNode[n2]=mstress[tN]
+                        mstressNode[n3]=mstress[tN]
+                        
+                        prinstress1Node[n1]=prinstress1[tN]
+                        prinstress1Node[n2]=prinstress1[tN]
+                        prinstress1Node[n3]=prinstress1[tN]
+                        
+                        prinstress2Node[n1]=prinstress2[tN]
+                        prinstress2Node[n2]=prinstress2[tN]
+                        prinstress2Node[n3]=prinstress2[tN]
+                        
+                        prinstress3Node[n1]=prinstress3[tN]
+                        prinstress3Node[n2]=prinstress3[tN]
+                        prinstress3Node[n3]=prinstress3[tN]
+                    else:
+                        nodeCount[n1]=nodeCount[n1]+1
+                        nodeCount[n2]=nodeCount[n2]+1
+                        nodeCount[n3]=nodeCount[n3]+1
+                        
+                        #print (shearstress[tN])
+                        shearstressNode[n1]=shearstressNode[n1]+shearstress[tN]
+                        shearstressNode[n2]=shearstressNode[n2]+shearstress[tN]
+                        shearstressNode[n3]=shearstressNode[n3]+shearstress[tN]
+                        
+                        mstressNode[n1]=mstressNode[n1]+mstress[tN]
+                        mstressNode[n2]=mstressNode[n2]+mstress[tN]
+                        mstressNode[n3]=mstressNode[n3]+mstress[tN]
+                        
+                        prinstress1Node[n1]=prinstress1Node[n1]+prinstress1[tN]
+                        prinstress1Node[n2]=prinstress1Node[n2]+prinstress1[tN]
+                        prinstress1Node[n3]=prinstress1Node[n3]+prinstress1[tN]
+                        
+                        prinstress2Node[n1]=prinstress2Node[n1]+prinstress2[tN]
+                        prinstress2Node[n2]=prinstress2Node[n2]+prinstress2[tN]
+                        prinstress2Node[n3]=prinstress2Node[n3]+prinstress2[tN]
+                        
+                        prinstress3Node[n1]=prinstress3Node[n1]+prinstress3[tN]
+                        prinstress3Node[n2]=prinstress3Node[n2]+prinstress3[tN]
+                        prinstress3Node[n3]=prinstress3Node[n3]+prinstress3[tN]
+                        
+                elif MemberList[id].mtype =='CQUAD4':
                 
-                if isOne==1: 
-                    shearstressNode[n1]=shearstress[tN]
-                    shearstressNode[n2]=shearstress[tN]
-                    shearstressNode[n3]=shearstress[tN]
+                    #MemberCQUAD4(data[1].strip(), data[3], data[4], data[5], data[6], data[0].strip())  
+                    n1=int(MemberList[id].n1)-1
+                    n2=int(MemberList[id].n2)-1
+                    n3=int(MemberList[id].n3)-1
+                    n4=int(MemberList[id].n4)-1
+                    #print (str(tN)+' '+str(n1)+' '+str(n2)+' '+str(n3)+' '+str(n4))
                     
-                    mstressNode[n1]=mstress[tN]
-                    mstressNode[n2]=mstress[tN]
-                    mstressNode[n3]=mstress[tN]
+                    if isOne==1: 
+                        shearstressNode[n1]=shearstress[tN]
+                        shearstressNode[n2]=shearstress[tN]
+                        shearstressNode[n3]=shearstress[tN]
+                        shearstressNode[n4]=shearstress[tN]
+                        
+                        mstressNode[n1]=mstress[tN]
+                        mstressNode[n2]=mstress[tN]
+                        mstressNode[n3]=mstress[tN]
+                        mstressNode[n4]=mstress[tN]
+                        
+                        prinstress1Node[n1]=prinstress1[tN]
+                        prinstress1Node[n2]=prinstress1[tN]
+                        prinstress1Node[n3]=prinstress1[tN]
+                        prinstress1Node[n4]=prinstress1[tN]
+                        
+                        prinstress2Node[n1]=prinstress2[tN]
+                        prinstress2Node[n2]=prinstress2[tN]
+                        prinstress2Node[n3]=prinstress2[tN]
+                        prinstress2Node[n4]=prinstress2[tN]
+                        
+                        prinstress3Node[n1]=prinstress3[tN]
+                        prinstress3Node[n2]=prinstress3[tN]
+                        prinstress3Node[n3]=prinstress3[tN]
+                        prinstress3Node[n4]=prinstress3[tN]
+                    else:
+                        nodeCount[n1]=nodeCount[n1]+1
+                        nodeCount[n2]=nodeCount[n2]+1
+                        nodeCount[n3]=nodeCount[n3]+1
+                        nodeCount[n4]=nodeCount[n4]+1
+                        
+                        #print (shearstress[tN])
+                        shearstressNode[n1]=shearstressNode[n1]+shearstress[tN]
+                        shearstressNode[n2]=shearstressNode[n2]+shearstress[tN]
+                        shearstressNode[n3]=shearstressNode[n3]+shearstress[tN]
+                        shearstressNode[n4]=shearstressNode[n4]+shearstress[tN]
+                        
+                        mstressNode[n1]=mstressNode[n1]+mstress[tN]
+                        mstressNode[n2]=mstressNode[n2]+mstress[tN]
+                        mstressNode[n3]=mstressNode[n3]+mstress[tN]
+                        mstressNode[n4]=mstressNode[n4]+mstress[tN]
+                        
+                        prinstress1Node[n1]=prinstress1Node[n1]+prinstress1[tN]
+                        prinstress1Node[n2]=prinstress1Node[n2]+prinstress1[tN]
+                        prinstress1Node[n3]=prinstress1Node[n3]+prinstress1[tN]
+                        prinstress1Node[n4]=prinstress1Node[n4]+prinstress1[tN]
+                        
+                        prinstress2Node[n1]=prinstress2Node[n1]+prinstress2[tN]
+                        prinstress2Node[n2]=prinstress2Node[n2]+prinstress2[tN]
+                        prinstress2Node[n3]=prinstress2Node[n3]+prinstress2[tN]
+                        prinstress2Node[n4]=prinstress2Node[n4]+prinstress2[tN]
+                        
+                        prinstress3Node[n1]=prinstress3Node[n1]+prinstress3[tN]
+                        prinstress3Node[n2]=prinstress3Node[n2]+prinstress3[tN]
+                        prinstress3Node[n3]=prinstress3Node[n3]+prinstress3[tN]
+                        prinstress3Node[n4]=prinstress3Node[n4]+prinstress3[tN]
+                        
+                elif MemberList[id].mtype =='CTETRA':
+                
+                    n1=int(MemberList[id].n1)-1
+                    n2=int(MemberList[id].n2)-1
+                    n3=int(MemberList[id].n3)-1
+                    n4=int(MemberList[id].n4)-1
+                    #print (str(tN)+' '+str(n1)+' '+str(n2)+' '+str(n3)+' '+str(n4))
                     
-                    prinstress1Node[n1]=prinstress1[tN]
-                    prinstress1Node[n2]=prinstress1[tN]
-                    prinstress1Node[n3]=prinstress1[tN]
-                    
-                    prinstress2Node[n1]=prinstress2[tN]
-                    prinstress2Node[n2]=prinstress2[tN]
-                    prinstress2Node[n3]=prinstress2[tN]
-                    
-                    prinstress3Node[n1]=prinstress3[tN]
-                    prinstress3Node[n2]=prinstress3[tN]
-                    prinstress3Node[n3]=prinstress3[tN]
-                else:
-                    nodeCount[n1]=nodeCount[n1]+1
-                    nodeCount[n2]=nodeCount[n2]+1
-                    nodeCount[n3]=nodeCount[n3]+1
-                    
-                    #print (shearstress[tN])
-                    shearstressNode[n1]=shearstressNode[n1]+shearstress[tN]
-                    shearstressNode[n2]=shearstressNode[n2]+shearstress[tN]
-                    shearstressNode[n3]=shearstressNode[n3]+shearstress[tN]
-                    
-                    mstressNode[n1]=mstressNode[n1]+mstress[tN]
-                    mstressNode[n2]=mstressNode[n2]+mstress[tN]
-                    mstressNode[n3]=mstressNode[n3]+mstress[tN]
-                    
-                    prinstress1Node[n1]=prinstress1Node[n1]+prinstress1[tN]
-                    prinstress1Node[n2]=prinstress1Node[n2]+prinstress1[tN]
-                    prinstress1Node[n3]=prinstress1Node[n3]+prinstress1[tN]
-                    
-                    prinstress2Node[n1]=prinstress2Node[n1]+prinstress2[tN]
-                    prinstress2Node[n2]=prinstress2Node[n2]+prinstress2[tN]
-                    prinstress2Node[n3]=prinstress2Node[n3]+prinstress2[tN]
-                    
-                    prinstress3Node[n1]=prinstress3Node[n1]+prinstress3[tN]
-                    prinstress3Node[n2]=prinstress3Node[n2]+prinstress3[tN]
-                    prinstress3Node[n3]=prinstress3Node[n3]+prinstress3[tN]
+                    if isOne==1: 
+                        shearstressNode[n1]=shearstress[tN]
+                        shearstressNode[n2]=shearstress[tN]
+                        shearstressNode[n3]=shearstress[tN]
+                        shearstressNode[n4]=shearstress[tN]
+                        
+                        mstressNode[n1]=mstress[tN]
+                        mstressNode[n2]=mstress[tN]
+                        mstressNode[n3]=mstress[tN]
+                        mstressNode[n4]=mstress[tN]
+                        
+                        prinstress1Node[n1]=prinstress1[tN]
+                        prinstress1Node[n2]=prinstress1[tN]
+                        prinstress1Node[n3]=prinstress1[tN]
+                        prinstress1Node[n4]=prinstress1[tN]
+                        
+                        prinstress2Node[n1]=prinstress2[tN]
+                        prinstress2Node[n2]=prinstress2[tN]
+                        prinstress2Node[n3]=prinstress2[tN]
+                        prinstress2Node[n4]=prinstress2[tN]
+                        
+                        prinstress3Node[n1]=prinstress3[tN]
+                        prinstress3Node[n2]=prinstress3[tN]
+                        prinstress3Node[n3]=prinstress3[tN]
+                        prinstress3Node[n4]=prinstress3[tN]
+                    else:
+                        nodeCount[n1]=nodeCount[n1]+1
+                        nodeCount[n2]=nodeCount[n2]+1
+                        nodeCount[n3]=nodeCount[n3]+1
+                        nodeCount[n4]=nodeCount[n4]+1
+                        
+                        #print (shearstress[tN])
+                        shearstressNode[n1]=shearstressNode[n1]+shearstress[tN]
+                        shearstressNode[n2]=shearstressNode[n2]+shearstress[tN]
+                        shearstressNode[n3]=shearstressNode[n3]+shearstress[tN]
+                        shearstressNode[n4]=shearstressNode[n4]+shearstress[tN]
+                        
+                        mstressNode[n1]=mstressNode[n1]+mstress[tN]
+                        mstressNode[n2]=mstressNode[n2]+mstress[tN]
+                        mstressNode[n3]=mstressNode[n3]+mstress[tN]
+                        mstressNode[n4]=mstressNode[n4]+mstress[tN]
+                        
+                        prinstress1Node[n1]=prinstress1Node[n1]+prinstress1[tN]
+                        prinstress1Node[n2]=prinstress1Node[n2]+prinstress1[tN]
+                        prinstress1Node[n3]=prinstress1Node[n3]+prinstress1[tN]
+                        prinstress1Node[n4]=prinstress1Node[n4]+prinstress1[tN]
+                        
+                        prinstress2Node[n1]=prinstress2Node[n1]+prinstress2[tN]
+                        prinstress2Node[n2]=prinstress2Node[n2]+prinstress2[tN]
+                        prinstress2Node[n3]=prinstress2Node[n3]+prinstress2[tN]
+                        prinstress2Node[n4]=prinstress2Node[n4]+prinstress2[tN]
+                        
+                        prinstress3Node[n1]=prinstress3Node[n1]+prinstress3[tN]
+                        prinstress3Node[n2]=prinstress3Node[n2]+prinstress3[tN]
+                        prinstress3Node[n3]=prinstress3Node[n3]+prinstress3[tN]
+                        prinstress3Node[n4]=prinstress3Node[n4]+prinstress3[tN]
+                        
+            if MemberList[id].mtype =='CTRIA3':
+                for id in range(numNode): # node
+                    tn=int(id)
+                    #print (nodeCount[tn])
+                    shearstressNode[tn]=shearstressNode[tn]/nodeCount[tn]
+                    mstressNode[tn]=mstressNode[tn]/nodeCount[tn]
+                    prinstress1Node[tn]=prinstress1Node[tn]/nodeCount[tn]
+                    prinstress2Node[tn]=prinstress2Node[tn]/nodeCount[tn]
+                    prinstress3Node[tn]=prinstress3Node[tn]/nodeCount[tn]
                     
             elif MemberList[id].mtype =='CQUAD4':
-            
-                #MemberCQUAD4(data[1].strip(), data[3], data[4], data[5], data[6], data[0].strip())  
-                n1=int(MemberList[id].n1)-1
-                n2=int(MemberList[id].n2)-1
-                n3=int(MemberList[id].n3)-1
-                n4=int(MemberList[id].n4)-1
-                #print (str(tN)+' '+str(n1)+' '+str(n2)+' '+str(n3)+' '+str(n4))
-                
-                if isOne==1: 
-                    shearstressNode[n1]=shearstress[tN]
-                    shearstressNode[n2]=shearstress[tN]
-                    shearstressNode[n3]=shearstress[tN]
-                    shearstressNode[n4]=shearstress[tN]
-                    
-                    mstressNode[n1]=mstress[tN]
-                    mstressNode[n2]=mstress[tN]
-                    mstressNode[n3]=mstress[tN]
-                    mstressNode[n4]=mstress[tN]
-                    
-                    prinstress1Node[n1]=prinstress1[tN]
-                    prinstress1Node[n2]=prinstress1[tN]
-                    prinstress1Node[n3]=prinstress1[tN]
-                    prinstress1Node[n4]=prinstress1[tN]
-                    
-                    prinstress2Node[n1]=prinstress2[tN]
-                    prinstress2Node[n2]=prinstress2[tN]
-                    prinstress2Node[n3]=prinstress2[tN]
-                    prinstress2Node[n4]=prinstress2[tN]
-                    
-                    prinstress3Node[n1]=prinstress3[tN]
-                    prinstress3Node[n2]=prinstress3[tN]
-                    prinstress3Node[n3]=prinstress3[tN]
-                    prinstress3Node[n4]=prinstress3[tN]
-                else:
-                    nodeCount[n1]=nodeCount[n1]+1
-                    nodeCount[n2]=nodeCount[n2]+1
-                    nodeCount[n3]=nodeCount[n3]+1
-                    nodeCount[n4]=nodeCount[n4]+1
-                    
-                    #print (shearstress[tN])
-                    shearstressNode[n1]=shearstressNode[n1]+shearstress[tN]
-                    shearstressNode[n2]=shearstressNode[n2]+shearstress[tN]
-                    shearstressNode[n3]=shearstressNode[n3]+shearstress[tN]
-                    shearstressNode[n4]=shearstressNode[n4]+shearstress[tN]
-                    
-                    mstressNode[n1]=mstressNode[n1]+mstress[tN]
-                    mstressNode[n2]=mstressNode[n2]+mstress[tN]
-                    mstressNode[n3]=mstressNode[n3]+mstress[tN]
-                    mstressNode[n4]=mstressNode[n4]+mstress[tN]
-                    
-                    prinstress1Node[n1]=prinstress1Node[n1]+prinstress1[tN]
-                    prinstress1Node[n2]=prinstress1Node[n2]+prinstress1[tN]
-                    prinstress1Node[n3]=prinstress1Node[n3]+prinstress1[tN]
-                    prinstress1Node[n4]=prinstress1Node[n4]+prinstress1[tN]
-                    
-                    prinstress2Node[n1]=prinstress2Node[n1]+prinstress2[tN]
-                    prinstress2Node[n2]=prinstress2Node[n2]+prinstress2[tN]
-                    prinstress2Node[n3]=prinstress2Node[n3]+prinstress2[tN]
-                    prinstress2Node[n4]=prinstress2Node[n4]+prinstress2[tN]
-                    
-                    prinstress3Node[n1]=prinstress3Node[n1]+prinstress3[tN]
-                    prinstress3Node[n2]=prinstress3Node[n2]+prinstress3[tN]
-                    prinstress3Node[n3]=prinstress3Node[n3]+prinstress3[tN]
-                    prinstress3Node[n4]=prinstress3Node[n4]+prinstress3[tN]
+                for id in range(numNode): # node
+                    tn=int(id)
+                    #print (nodeCount[tn])
+                    shearstressNode[tn]=shearstressNode[tn]/nodeCount[tn]
+                    mstressNode[tn]=mstressNode[tn]/nodeCount[tn]
+                    prinstress1Node[tn]=prinstress1Node[tn]/nodeCount[tn]
+                    prinstress2Node[tn]=prinstress2Node[tn]/nodeCount[tn]
+                    prinstress3Node[tn]=prinstress3Node[tn]/nodeCount[tn]
                     
             elif MemberList[id].mtype =='CTETRA':
-            
-                n1=int(MemberList[id].n1)-1
-                n2=int(MemberList[id].n2)-1
-                n3=int(MemberList[id].n3)-1
-                n4=int(MemberList[id].n4)-1
-                #print (str(tN)+' '+str(n1)+' '+str(n2)+' '+str(n3)+' '+str(n4))
-                
-                if isOne==1: 
-                    shearstressNode[n1]=shearstress[tN]
-                    shearstressNode[n2]=shearstress[tN]
-                    shearstressNode[n3]=shearstress[tN]
-                    shearstressNode[n4]=shearstress[tN]
+                for id in range(numNode): # node
+                    tn=int(id)
+                    #print (nodeCount[tn])
+                    shearstressNode[tn]=shearstressNode[tn]/nodeCount[tn]
+                    mstressNode[tn]=mstressNode[tn]/nodeCount[tn]
+                    prinstress1Node[tn]=prinstress1Node[tn]/nodeCount[tn]
+                    prinstress2Node[tn]=prinstress2Node[tn]/nodeCount[tn]
+                    prinstress3Node[tn]=prinstress3Node[tn]/nodeCount[tn]
                     
-                    mstressNode[n1]=mstress[tN]
-                    mstressNode[n2]=mstress[tN]
-                    mstressNode[n3]=mstress[tN]
-                    mstressNode[n4]=mstress[tN]
-                    
-                    prinstress1Node[n1]=prinstress1[tN]
-                    prinstress1Node[n2]=prinstress1[tN]
-                    prinstress1Node[n3]=prinstress1[tN]
-                    prinstress1Node[n4]=prinstress1[tN]
-                    
-                    prinstress2Node[n1]=prinstress2[tN]
-                    prinstress2Node[n2]=prinstress2[tN]
-                    prinstress2Node[n3]=prinstress2[tN]
-                    prinstress2Node[n4]=prinstress2[tN]
-                    
-                    prinstress3Node[n1]=prinstress3[tN]
-                    prinstress3Node[n2]=prinstress3[tN]
-                    prinstress3Node[n3]=prinstress3[tN]
-                    prinstress3Node[n4]=prinstress3[tN]
-                else:
-                    nodeCount[n1]=nodeCount[n1]+1
-                    nodeCount[n2]=nodeCount[n2]+1
-                    nodeCount[n3]=nodeCount[n3]+1
-                    nodeCount[n4]=nodeCount[n4]+1
-                    
-                    #print (shearstress[tN])
-                    shearstressNode[n1]=shearstressNode[n1]+shearstress[tN]
-                    shearstressNode[n2]=shearstressNode[n2]+shearstress[tN]
-                    shearstressNode[n3]=shearstressNode[n3]+shearstress[tN]
-                    shearstressNode[n4]=shearstressNode[n4]+shearstress[tN]
-                    
-                    mstressNode[n1]=mstressNode[n1]+mstress[tN]
-                    mstressNode[n2]=mstressNode[n2]+mstress[tN]
-                    mstressNode[n3]=mstressNode[n3]+mstress[tN]
-                    mstressNode[n4]=mstressNode[n4]+mstress[tN]
-                    
-                    prinstress1Node[n1]=prinstress1Node[n1]+prinstress1[tN]
-                    prinstress1Node[n2]=prinstress1Node[n2]+prinstress1[tN]
-                    prinstress1Node[n3]=prinstress1Node[n3]+prinstress1[tN]
-                    prinstress1Node[n4]=prinstress1Node[n4]+prinstress1[tN]
-                    
-                    prinstress2Node[n1]=prinstress2Node[n1]+prinstress2[tN]
-                    prinstress2Node[n2]=prinstress2Node[n2]+prinstress2[tN]
-                    prinstress2Node[n3]=prinstress2Node[n3]+prinstress2[tN]
-                    prinstress2Node[n4]=prinstress2Node[n4]+prinstress2[tN]
-                    
-                    prinstress3Node[n1]=prinstress3Node[n1]+prinstress3[tN]
-                    prinstress3Node[n2]=prinstress3Node[n2]+prinstress3[tN]
-                    prinstress3Node[n3]=prinstress3Node[n3]+prinstress3[tN]
-                    prinstress3Node[n4]=prinstress3Node[n4]+prinstress3[tN]
-                    
-        if MemberList[id].mtype =='CTRIA3':
+            mstressF = []
+            prinstress1F = []
+            prinstress2F = []
+            prinstress3F = []
+            shearstressF = []
             for id in range(numNode): # node
                 tn=int(id)
-                #print (nodeCount[tn])
-                shearstressNode[tn]=shearstressNode[tn]/nodeCount[tn]
-                mstressNode[tn]=mstressNode[tn]/nodeCount[tn]
-                prinstress1Node[tn]=prinstress1Node[tn]/nodeCount[tn]
-                prinstress2Node[tn]=prinstress2Node[tn]/nodeCount[tn]
-                prinstress3Node[tn]=prinstress3Node[tn]/nodeCount[tn]
-                
-        elif MemberList[id].mtype =='CQUAD4':
-            for id in range(numNode): # node
-                tn=int(id)
-                #print (nodeCount[tn])
-                shearstressNode[tn]=shearstressNode[tn]/nodeCount[tn]
-                mstressNode[tn]=mstressNode[tn]/nodeCount[tn]
-                prinstress1Node[tn]=prinstress1Node[tn]/nodeCount[tn]
-                prinstress2Node[tn]=prinstress2Node[tn]/nodeCount[tn]
-                prinstress3Node[tn]=prinstress3Node[tn]/nodeCount[tn]
-                
-        elif MemberList[id].mtype =='CTETRA':
-            for id in range(numNode): # node
-                tn=int(id)
-                #print (nodeCount[tn])
-                shearstressNode[tn]=shearstressNode[tn]/nodeCount[tn]
-                mstressNode[tn]=mstressNode[tn]/nodeCount[tn]
-                prinstress1Node[tn]=prinstress1Node[tn]/nodeCount[tn]
-                prinstress2Node[tn]=prinstress2Node[tn]/nodeCount[tn]
-                prinstress3Node[tn]=prinstress3Node[tn]/nodeCount[tn]
-                
-        mstressF = []
-        prinstress1F = []
-        prinstress2F = []
-        prinstress3F = []
-        shearstressF = []
-        for id in range(numNode): # node
-            tn=int(id)
-            #print (tn)
-            #print (mstressNode[tn])
-            mstressF.append(mstressNode[tn])
-            shearstressF.append(shearstressNode[tn])
-            prinstress1F.append(prinstress1Node[tn])
-            prinstress2F.append(prinstress2Node[tn])
-            prinstress3F.append(prinstress3Node[tn])
+                #print (tn)
+                #print (mstressNode[tn])
+                mstressF.append(mstressNode[tn])
+                shearstressF.append(shearstressNode[tn])
+                prinstress1F.append(prinstress1Node[tn])
+                prinstress2F.append(prinstress2Node[tn])
+                prinstress3F.append(prinstress3Node[tn])
             
         for id in range(numNode): # node
             #print (str(id)+" "+str(mode_disp_x[id])+" "+ str(mode_disp_y[id])+" "+str(mode_disp_z[id]))
@@ -1258,13 +1280,14 @@ def import_neu(filename, filenameDat=None):
             # fill DisplacementLengths
             res_obj[iLC] = restools.add_disp_apps(res_obj[iLC])
 
-            # fill StressValues
-            res_obj[iLC].vonMises = mstressF
-            res_obj[iLC].PrincipalMax = prinstress1F
-            res_obj[iLC].PrincipalMed = prinstress2F
-            res_obj[iLC].PrincipalMin = prinstress3F
+            if isStress==1:
+                # fill StressValues
+                res_obj[iLC].vonMises = mstressF
+                res_obj[iLC].PrincipalMax = prinstress1F
+                res_obj[iLC].PrincipalMed = prinstress2F
+                res_obj[iLC].PrincipalMin = prinstress3F
 
-            res_obj[iLC].MaxShear = shearstressF
+                res_obj[iLC].MaxShear = shearstressF
             
             #borrow to show
             #res_obj[iLC].Peeq=mode_disp_R
